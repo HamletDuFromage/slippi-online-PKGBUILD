@@ -21,7 +21,6 @@ jobs:
           PKGVER="$(git describe --long --tags | sed -e 's/-\([^-]*-g[^-]*\)$/-r\1/' -e 's/-/./g')"
           sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./../PKGBUILD
           popd > /dev/null
-          makepkg --printsrcinfo > .SRCINFO
       - name: push changes
         run: |
           git config --global user.name 'HamletDuFromage'
