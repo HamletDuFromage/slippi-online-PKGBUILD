@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v2
       - name: update PKGBUILD
         run: |
+          git clone https://github.com/project-slippi/Ishiiruka
           pushd Ishiiruka > /dev/null
           TAGNAME="$(git describe --tags --abbrev=0)"
           sed -i "/_tagname=/c\_tagname=\'$TAGNAME\'" ./../PKGBUILD
