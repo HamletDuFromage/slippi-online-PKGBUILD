@@ -1,0 +1,34 @@
+name: Update repo's PKGBUILD
+
+on:
+  schedule: 
+    - cron:  '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: update PKGBUILD
+        run: |
+          pushd Ishiiruka > /dev/null
+          TAGNAME="$(git describe --tags --abbrev=0)"
+          sed -i "/_tagname=/c\_tagname=\'$TAGNAME\'" ./../PKGBUILD
+          git checkout --quiet "$(git rev-list -n 1 $TAGNAME)"
+          PKGVER="$(git describe --long --tags | sed -e 's/-\([^-]*-g[^-]*\)$/-r\1/' -e 's/-/./g')"
+          sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./../PKGBUILD
+          popd > /dev/null
+          makepkg --printsrcinfo > .SRCINFO
+      - name: push changes
+        run: |
+          git config --global user.name 'HamletDuFromage'
+          git config --global user.email '61667930+HamletDuFromage@users.noreply.github.com'
+          git add PKGBUILD SRCINFO
+          if [[ `git status --porcelain` ]]; then
+            git commit -m "automatic: updated PKGBUILD"
+            git push
+          else
+            echo "Nothing to commit!"
+          fi
