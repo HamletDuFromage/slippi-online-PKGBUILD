@@ -20,12 +20,14 @@ jobs:
           git checkout --quiet "$(git rev-list -n 1 $TAGNAME)"
           PKGVER="$(git describe --long --tags | sed -e 's/-\([^-]*-g[^-]*\)$/-r\1/' -e 's/-/./g')"
           sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./../PKGBUILD
+          sed -i "/pkgver =/c\pkgver = $PKGVER" ./../.SRCINFO
+          sed -i "/source =/c\source = slippi-online-git::git+https://github.com/project-slippi/Ishiiruka.git#tag=$TAGNAME" ./../.SRCINFO
           popd > /dev/null
       - name: push changes
         run: |
           git config --global user.name 'HamletDuFromage'
           git config --global user.email '61667930+HamletDuFromage@users.noreply.github.com'
-          git add PKGBUILD
+          git add PKGBUILD .SRCINFO
           if [[ `git status --porcelain` ]]; then
             git commit -m "automatic: updated PKGBUILD"
             git push

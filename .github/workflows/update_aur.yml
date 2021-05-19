@@ -2,21 +2,39 @@ name: Update AUR's PKGBUILD of slippi-online-git
 
 on:
   push:
+  schedule: 
+    - cron:  '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
   aur-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Publish AUR package
-        uses: KSXGitHub/github-actions-deploy-aur@v2.2.4
-        with:
-          pkgname: slippi-online-git
-          pkgbuild: ./PKGBUILD
-          commit_username: ${{ secrets.AUR_USERNAME }}
-          commit_email: ${{ secrets.AUR_EMAIL }}
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Update PKGBUILD through GitHub workflow
-          ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
+    - name: Setup SSH Keys and known_hosts
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.AUR_SSH_PRIVATE_KEY }}"
+
+    - name: Update and push changes
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+          git clone https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD /tmp/github
+          git clone ssh://aur@aur.archlinux.org/slippi-online-git.git /tmp/aur
+          cp /tmp/github/{PKGBUILD,.SRCINFO} /tmp/aur/
+          cd /tmp/aur
+          git config --global user.name 'HamletDuFromage'
+          git config --global user.email '61667930+HamletDuFromage@users.noreply.github.com'
+          git add PKGBUILD .SRCINFO
+          if [[ `git status --porcelain` ]]; then
+            git commit -m "automatic: updated PKGBUILD"
+            git push
+          else
+            echo "Nothing to commit!"
+          fi
