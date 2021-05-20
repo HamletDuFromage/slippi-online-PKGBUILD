@@ -1,0 +1,64 @@
+name: Update repo's and AUR's PKGBUILD
+
+on:
+  push:
+  schedule: 
+    - cron:  '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: update PKGBUILD
+        run: |
+          git clone https://github.com/project-slippi/Ishiiruka
+          pushd Ishiiruka > /dev/null
+          TAGNAME="$(git describe --tags --abbrev=0)"
+          sed -i "/_tagname=/c\_tagname=\'$TAGNAME\'" ./../PKGBUILD
+          git checkout --quiet "$(git rev-list -n 1 $TAGNAME)"
+          PKGVER="$(git describe --long --tags | sed -e 's/-\([^-]*-g[^-]*\)$/-r\1/' -e 's/-/./g')"
+          sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./../PKGBUILD
+          sed -i "/pkgver =/c\	pkgver = $PKGVER" ./../.SRCINFO
+          sed -i "/source =/c\	source = slippi-online-git::git+https://github.com/project-slippi/Ishiiruka.git#tag=$TAGNAME" ./../.SRCINFO
+          popd > /dev/null
+
+      - name: push changes to repo
+        run: |
+          git config --global user.name 'HamletDuFromage'
+          git config --global user.email '61667930+HamletDuFromage@users.noreply.github.com'
+          git add PKGBUILD .SRCINFO
+          if [[ `git status --porcelain` ]]; then
+            git commit -m "automatic: updated PKGBUILD (repo)"
+            git push
+          else
+            echo "Nothing to commit! (repo)"
+          fi
+
+      - name: Setup SSH Keys and known_hosts
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.AUR_SSH_PRIVATE_KEY }}"
+
+      - name: push changes to aur
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+          git clone ssh://aur@aur.archlinux.org/slippi-online-git.git /tmp/aur
+          cp {PKGBUILD,.SRCINFO} /tmp/aur/
+          cd /tmp/aur
+          git config --global user.name 'HamletDuFromage (github workflow https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD)'
+          git config --global user.email '61667930+HamletDuFromage@users.noreply.github.com'
+          git add PKGBUILD .SRCINFO
+          if [[ `git status --porcelain` ]]; then
+            git commit -m "automatic: updated PKGBUILD (AUR)"
+            git push
+          else
+            echo "Nothing to commit! (AUR)"
+          fi
