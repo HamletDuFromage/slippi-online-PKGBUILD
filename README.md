@@ -1,8 +1,6 @@
 # slippi-online-git-PKGBUILD
 
-[![Update AUR's PKGBUILD of slippi-online-git](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_aur.yml/badge.svg)](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_aur.yml)
-
-[![Update repo's PKGBUILD](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_repo.yml/badge.svg)](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_repo.yml)
+[![Update repo's and AUR's PKGBUILD](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_repos.yml/badge.svg)](https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/actions/workflows/update_repos.yml)
 
 This repo contains and updates the PKGBUILD for [slippi-online-git](https://aur.archlinux.org/packages/slippi-online-git/).
 
