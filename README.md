@@ -4,4 +4,4 @@
 
 This repo contains and updates the PKGBUILD for [slippi-online-git](https://aur.archlinux.org/packages/slippi-online-git/).
 
-Get more information about Slippi on [slippi.gg](https://slippi.gg/).
+Get more information about Slippi on [slippi.gg](https://slippi.gg/) or on their [Github repo](https://github.com/project-slippi/Ishiiruka).
