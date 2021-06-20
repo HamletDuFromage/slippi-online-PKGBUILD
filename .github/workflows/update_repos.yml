@@ -39,6 +39,7 @@ jobs:
           fi
 
   update-aur:
+    needs: update-repo
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
