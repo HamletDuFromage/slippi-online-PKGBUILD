@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
+
       - name: update PKGBUILD
         run: |
           git clone https://github.com/project-slippi/Ishiiruka
@@ -36,6 +37,12 @@ jobs:
           else
             echo "Nothing to commit! (repo)"
           fi
+
+  update-aur:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
 
       - name: Setup SSH Keys and known_hosts
         env:
