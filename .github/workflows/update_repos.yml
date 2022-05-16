@@ -9,22 +9,35 @@ on:
 jobs:
   update-repo:
     runs-on: ubuntu-latest
+    container: archlinux:latest
     steps:
+      - name: install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S git binutils --noconfirm
+
       - name: checkout repo content
         uses: actions/checkout@v2
 
+      - name: create user
+        run: |
+          useradd -m homlet
+
       - name: update PKGBUILD
         run: |
-          git clone https://github.com/project-slippi/Ishiiruka
-          pushd Ishiiruka > /dev/null
+          git clone https://github.com/project-slippi/Ishiiruka /tmp/Ishiiruka
+          cd /tmp/Ishiiruka
           TAGNAME="$(git describe --tags --abbrev=0)"
-          sed -i "/_tagname=/c\_tagname=\'$TAGNAME\'" ./../PKGBUILD
           git checkout --quiet "$(git rev-list -n 1 $TAGNAME)"
           PKGVER="$(git describe --long --tags | sed -e 's/-\([^-]*-g[^-]*\)$/-r\1/' -e 's/-/./g')"
-          sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./../PKGBUILD
-          sed -i "/pkgver =/c\	pkgver = $PKGVER" ./../.SRCINFO
-          sed -i "/source =/c\	source = slippi-online-git::git+https://github.com/project-slippi/Ishiiruka.git#tag=$TAGNAME" ./../.SRCINFO
-          popd > /dev/null
+          cd -
+
+          sed -i "/_tagname=/c\_tagname=\'$TAGNAME\'" ./PKGBUILD
+          sed -i "/pkgver=/c\pkgver=\'$PKGVER\'" ./PKGBUILD
+
+          chown -R homlet:homlet .
+          su -c "makepkg --printsrcinfo > .SRCINFO" homlet
+          chown -R root:root .
 
       - name: push changes to repo
         run: |
@@ -44,8 +57,6 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
-        with:
-          ref: 'master'
 
       - name: Setup SSH Keys and known_hosts
         env:
