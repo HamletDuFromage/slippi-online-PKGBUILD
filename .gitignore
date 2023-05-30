@@ -4,3 +4,4 @@ src/
 Ishiiruka/
 *.sh
 *.pkg.tar
+*-mbedtls2.diff
