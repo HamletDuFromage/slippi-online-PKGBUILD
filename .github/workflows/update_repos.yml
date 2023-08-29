@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: install dependencies
         run: |
-          pacman -Syu --noconfirm
+          pacman -Syyu --noconfirm
           pacman -S git binutils --noconfirm
 
       - name: checkout repo content
