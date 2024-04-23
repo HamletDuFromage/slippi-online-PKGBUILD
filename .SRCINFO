@@ -1,4 +1,4 @@
-pkgbase = slippi-online-git
+pkgbase = slippi-online
 	pkgdesc = Super Smash Bros. Melee rollback netcode
 	pkgver = v3.4.0.r0.g11e8e1906
 	pkgrel = 3
@@ -36,10 +36,10 @@ pkgbase = slippi-online-git
 	depends = libudev.so
 	depends = libusb-1.0.so
 	optdepends = pulseaudio: PulseAudio backend
-	source = slippi-online-git::git+https://github.com/project-slippi/Ishiiruka.git#tag=v3.4.0
+	source = slippi-online::git+https://github.com/project-slippi/Ishiiruka.git#tag=v3.4.0
 	sha256sums = SKIP
 
-pkgname = slippi-online-git
+pkgname = slippi-online
 	pkgdesc = Super Smash Bros. Melee rollback netcode - git version
 	provides = slippi-online
 	conflicts = slippi-online

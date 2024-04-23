@@ -1,9 +1,6 @@
-# Maintainer: HamletDuFromage <https://github.com/HamletDuFromage/slippi-online-git-PKGBUILD/issues>
+# Maintainer: HamletDuFromage <https://github.com/HamletDuFromage/slippi-online-PKGBUILD/issues>
 
-_projectname='slippi-online'
-_mainpkgname="$_projectname"
-pkgbase="$_mainpkgname-git"
-pkgname=("$pkgbase")
+pkgname="slippi-online"
 _tagname='v3.4.0'
 pkgver='v3.4.0.r0.g11e8e1906'
 pkgrel='3'
@@ -28,7 +25,7 @@ sha256sums=(
 	'SKIP'
 )
 
-_sourcedirectory="$pkgbase"
+_sourcedirectory="$pkgname"
 _dolphinemu="dolphin-emu"
 
 pkgver() {
@@ -53,14 +50,14 @@ build() {
 
 package() {
 	pkgdesc="$pkgdesc$_pkgdescappend"
-	provides=("$_mainpkgname")
-	conflicts=("$_mainpkgname")
+	provides=("$pkgname")
+	conflicts=("$pkgname")
 
 	cd "$_sourcedirectory/"
 	make DESTDIR="$pkgdir" -C 'build/' install
 
 	# Rename the binary to not be mistaken with Dolphin
-	mv "$pkgdir/usr/local/bin/$_dolphinemu" "$pkgdir/usr/local/bin/$_mainpkgname"
+	mv "$pkgdir/usr/local/bin/$_dolphinemu" "$pkgdir/usr/local/bin/$pkgname"
 
 	cp -r "Data/Sys/" "$pkgdir/usr/local/bin/"
 
