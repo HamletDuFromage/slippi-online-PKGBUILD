@@ -5,7 +5,6 @@ _tagname='v3.4.0'
 pkgver='v3.4.0.r0.g11e8e1906'
 pkgrel='3'
 pkgdesc='Super Smash Bros. Melee rollback netcode'
-_pkgdescappend=' - git version'
 arch=('x86_64')
 url="https://slippi.gg/"
 license=('GPL2')
@@ -48,8 +47,7 @@ build() {
 	make -j$(nproc)
 }
 
-package() {
-	pkgdesc="$pkgdesc$_pkgdescappend"
+package() 
 	provides=("$pkgname")
 	conflicts=("$pkgname")
 
