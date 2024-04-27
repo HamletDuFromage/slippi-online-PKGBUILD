@@ -47,7 +47,8 @@ build() {
 	make -j$(nproc)
 }
 
-package() 
+package() {
+	pkgdesc="$pkgdesc"
 	provides=("$pkgname")
 	conflicts=("$pkgname")
 
